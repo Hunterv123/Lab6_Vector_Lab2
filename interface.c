@@ -2,7 +2,7 @@
  * Author: Hunter Vassar
  * Date: 10/01/2026
  * Description: Defines the functions to help with the user interface,
- * including the main function, and the functions to get user input and parse it.
+ *  including the main function, and the functions to get user input and parse it.
  ********************/
 #include <stdio.h>
 #include <string.h>
