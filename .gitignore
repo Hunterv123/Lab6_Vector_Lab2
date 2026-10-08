@@ -2,3 +2,5 @@
 *.o
 #dependency files
 *.d
+#the exe file
+main
