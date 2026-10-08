@@ -5,6 +5,7 @@
  * vector data, functions include addvect, findvect, clear, and list.
  ********************/
 #include <string.h>
+#include <stdio.h>
 #include "vectorstorage.h"
 static vect vector_array[10]; //Array to hold the vectors
 static int count = 0; //Counter to keep track of the number of vectors in the array
