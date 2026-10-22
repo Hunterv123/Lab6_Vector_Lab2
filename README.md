@@ -21,3 +21,4 @@
     - This program makes use of dynamic memory by allocating an inital memory space of 10 vectors. Once the user stores a vector one less than the initial allocated memory, memory is then doubled to allow the user to input more vectors. Upon clear, the memory is freed and reset back to only 10 vectors.
 
 
+Test for lab
