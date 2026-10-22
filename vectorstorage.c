@@ -7,43 +7,109 @@
 #include <string.h>
 #include <stdio.h>
 #include "vectorstorage.h"
-static vect vector_array[10]; //Array to hold the vectors
+int size = 10; 
 static int count = 0; //Counter to keep track of the number of vectors in the array
-//Adds a vector to the vector array
-void addvect(vect vnew) {
+//Allows users to load vectors in from a csv file 
+
+vect* create_vector(int INITIAL_SIZE) {
+    vect *vector = malloc(INITIAL_SIZE * sizeof(vect));
+    if (vector == NULL) {
+        free(vector);
+        perror("Error creating memory in program");
+    }
+    return vector;
+}
+void loadFile(const char* filepath, vect **vector) {
+    char buffer[100];
+    FILE *fd = fopen(filepath, "r");
+    if (fd == NULL) {
+        perror("Error opening the file");
+        return;
+    }
+    while(fgets(buffer, sizeof(buffer), fd) != NULL) {
+        if(count + 1 > size) {
+            size *= 2;
+            vect *temp = realloc(*vector, size * sizeof(vect));
+            *vector = temp;
+        }
+        char *tokens[3];
+        int token_count = 0;
+        char *p = strtok(buffer, " ,\t\n");
+        count = 0;
+        while (p != NULL && count < 6) {
+            tokens[count] = p;
+            token_count++;
+            p = strtok(NULL, " ,\t\n");
+        }
+        strncpy(vector[count].name, tokens[0], sizeof(*vector[count].name) - 1);
+        vector[count].name[sizeof(*vector[count].name) - 1] = '\0'; // Ensure null
+        if(token_count == 1) {
+            **vector[count].x = atof(tokens[1]);
+            vector[count].y = 0.0;
+            vector[count].z = 0.0;
+        } else if (token_count == 2) {
+            vector[count].x = atof(tokens[1]);
+            vector[count].y = atof(tokens[2]);
+            vector[count].z = 0.0;
+        } else {
+            vector[count].x = atof(tokens[1]);
+            vector[count].y = atof(tokens[2]);
+            vector[count].z = atof(tokens[3]);
+        }
+        count++;
+    }
+    fclose(fd);
+}
+
+void savefile(const char* filepath, vect *vector) {
+    FILE *fd = fopen(filepath, "w");
+    if (fd == NULL) {
+        perror("Error saving to the specified file");
+        return;
+    }
     for(int i = 0; i < count; i++) {
-        if(strcmp(vector_array[i].name, vnew.name) == 0) {
-            vector_array[i] = vnew;
+        fprintf(fd, "%s %.2f %.2f %.2f\n", *vector[count].name, vector[count].x, vector[count].y, vector[count].z);
+    }
+    fclose(fd);
+    printf("Successfully saved\n");
+}
+//Adds a vector to the vector array
+void addvect(vect vnew, vect *vector) {
+    for(int i = 0; i < count; i++) {
+        if(strcmp(vector[i].name, vnew.name) == 0) {
+            vector[i] = vnew;
             return;
         }
     }
-    if(count < 10) {
-        vector_array[count] = vnew;
-        count++;
-    } else {
-        printf("Vector array is full, cannot add new vector. Use the clear command first\n");
+    if(count + 1 > size) {
+        size *= 2;
+        vect *temp = realloc(vector, size * sizeof(vect));
+        vector = temp;
     }
+    vector[count] = vnew;
+
+    count++;
 
 }
 //Finds a vector in the vector array by name and returns it
-vect findvect(char *name) {
+vect findvect(char *name, vect *vector) {
     for(int i = 0; i < count; i++) {
-        if(strcmp(vector_array[i].name, name) == 0) {
-            return vector_array[i];
+        if(strcmp(vector[i].name, name) == 0) {
+            return vector[i];
         }
     }
     printf("Could not find the vector %s\n", name);
     return (vect){"", 0, 0, 0}; // Return a default vector if not found
 }
 //Clears the vecotor array
-void clear() {
+void clear(vect *vector) {
     count = 0;
-    memset(vector_array, 0, sizeof(vector_array));
+    free(vector);
 }
 //Lists all the vectors in the vector array
-void list() {
+void list(vect *vector) {
     for(int i = 0; i < count; i++) {
-        printf("%s = %f, %f, %f\n", vector_array[i].name, vector_array[i].x, vector_array[i].y, vector_array[i].z);
+        printf("%s = %.2f, %.2f, %.2f\n", vector[i].name, vector[i].x, vector[i].y, vector[i].z);
     }
 }
 //Prints out a quick help menu for the user to see what commands are available

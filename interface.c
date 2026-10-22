@@ -2,15 +2,15 @@
  * Author: Hunter Vassar
  * Date: 10/01/2026
  * Description: Defines the functions to help with the user interface,
- *  including the main function, and the functions to get user input and parse it.
+ * including the main function, and the functions to get user input and parse it.
  ********************/
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "vector_struct.h"
+#include "vect.h"
 #include "vectorstorage.h"
 void run_interface(){
-    char *tokens[5];
+    char *tokens[6];
     char input[100]; // buffer to hold user input
     int count;
     while(1) {
@@ -21,7 +21,7 @@ void run_interface(){
         }
         char *p = strtok(input, " ,\t\n");
         count = 0;
-        while (p != NULL && count < 5) {
+        while (p != NULL && count < 6) {
             tokens[count] = p;
             count++;
             p = strtok(NULL, " ,\t\n");
@@ -29,7 +29,7 @@ void run_interface(){
         if (count == 0) {
             continue; // no input, prompt again
         } else if (count == 1) {
-            if (strcmp(tokens[0], "quit") == 0) {
+            if (strcmp(tokens[0], "exit") == 0) {
                 printf("Exiting the program.\n");
                 break;
             } else if (strcmp(tokens[0], "help") == 0) {
@@ -162,6 +162,8 @@ void run_interface(){
                     printf("%s = %.2f %.2f %.2f\n", v.name, v.x, v.y, v.z);
 
             }
+        } else {
+            printf("Error!!!!!\n");
         }
     }
 }

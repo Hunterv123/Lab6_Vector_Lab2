@@ -5,7 +5,7 @@
  * Only need to do add, subtract, and scalar multiply.
  ********************/
 
-#include "vector_struct.h"
+#include "vect.h"
 #include "vectormath.h"
 vect add(vect v1, vect v2) {
     vect result;

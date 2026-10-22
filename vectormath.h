@@ -6,7 +6,7 @@
 #ifndef VECTORMATH_H
 #define VECTORMATH_H
 
-#include "vector_struct.h"
+#include "vect.h"
 vect add(vect v1, vect v2);
 vect subtract(vect v1, vect v2);
 vect scalar_multiply(double scalar, vect v1);

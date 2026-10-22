@@ -18,5 +18,11 @@ void clear();
 void list();
 //Prints out a quick help menu for the user to see what commands are available
 void help();
+//Allows the users to export there list of vectors to a csv file
+void saveFile(FILE fd);
+//Allows users to load vectors in from a csv file 
+void loadFile(const char* filepath);
+
+vect* create_vector(int INITIAL_SIZE);
 
 #endif
