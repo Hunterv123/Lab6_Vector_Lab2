@@ -6,20 +6,21 @@
  ********************/
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "vectorstorage.h"
-int size = 10; 
+static int size = 10; 
 static int count = 0; //Counter to keep track of the number of vectors in the array
 //Allows users to load vectors in from a csv file 
 
-vect* create_vector(int INITIAL_SIZE) {
-    vect *vector = malloc(INITIAL_SIZE * sizeof(vect));
+vect* create_vector(int INITIAL_CAPACITY) {
+    vect *vector = malloc(INITIAL_CAPACITY * sizeof(vect));
     if (vector == NULL) {
         free(vector);
         perror("Error creating memory in program");
     }
     return vector;
 }
-void loadFile(const char* filepath, vect **vector) {
+void loadfile(const char* filepath, vect **vector) {
     char buffer[100];
     FILE *fd = fopen(filepath, "r");
     if (fd == NULL) {
@@ -32,7 +33,8 @@ void loadFile(const char* filepath, vect **vector) {
             vect *temp = realloc(*vector, size * sizeof(vect));
             *vector = temp;
         }
-        char *tokens[3];
+        vect *v = *vector;
+        char *tokens[4];
         int token_count = 0;
         char *p = strtok(buffer, " ,\t\n");
         count = 0;
@@ -41,21 +43,14 @@ void loadFile(const char* filepath, vect **vector) {
             token_count++;
             p = strtok(NULL, " ,\t\n");
         }
-        strncpy(vector[count].name, tokens[0], sizeof(*vector[count].name) - 1);
-        vector[count].name[sizeof(*vector[count].name) - 1] = '\0'; // Ensure null
-        if(token_count == 1) {
-            **vector[count].x = atof(tokens[1]);
-            vector[count].y = 0.0;
-            vector[count].z = 0.0;
-        } else if (token_count == 2) {
-            vector[count].x = atof(tokens[1]);
-            vector[count].y = atof(tokens[2]);
-            vector[count].z = 0.0;
-        } else {
-            vector[count].x = atof(tokens[1]);
-            vector[count].y = atof(tokens[2]);
-            vector[count].z = atof(tokens[3]);
+        if (token_count < 2) {
+            continue;
         }
+        strncpy(v[count].name, tokens[0], sizeof(v[count].name) - 1);
+        v[count].name[sizeof(v[count].name) - 1] = '\0'; // Ensure null
+        v[count].x = atof(tokens[1]);
+        v[count].y = token_count > 2 ? atof(tokens[2]) : 0.0;
+        v[count].z = token_count > 3 ? atof(tokens[3]) : 0.0;
         count++;
     }
     fclose(fd);
@@ -68,7 +63,7 @@ void savefile(const char* filepath, vect *vector) {
         return;
     }
     for(int i = 0; i < count; i++) {
-        fprintf(fd, "%s %.2f %.2f %.2f\n", *vector[count].name, vector[count].x, vector[count].y, vector[count].z);
+        fprintf(fd, "%s,%.2f,%.2f,%.2f\n", vector[i].name, vector[i].x, vector[i].y, vector[i].z);
     }
     fclose(fd);
     printf("Successfully saved\n");

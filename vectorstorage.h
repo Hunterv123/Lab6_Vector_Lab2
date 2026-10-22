@@ -9,9 +9,9 @@
 
 #include "vectormath.h"
 //Adds a vector to the vector array
-void addvect(vect vnew);
+void addvect(vect vnew, vect *vector);
 //Finds a vector in the vector array by name and returns it
-vect findvect(char *name);
+vect findvect(char *name, vect *vector);
 //Clears the vecotor array
 void clear();
 //Lists all the vectors in the vector array
@@ -19,10 +19,11 @@ void list();
 //Prints out a quick help menu for the user to see what commands are available
 void help();
 //Allows the users to export there list of vectors to a csv file
-void saveFile(FILE fd);
+void savefile(const char *filepath, vect *vector);
 //Allows users to load vectors in from a csv file 
-void loadFile(const char* filepath);
+void loadfile(const char* filepath, vect **vector);
+vect* create_vector(int INITIAL_CAPACITY);
 
-vect* create_vector(int INITIAL_SIZE);
+
 
 #endif
